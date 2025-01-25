@@ -46,6 +46,7 @@ const AppContent: React.FC = () => {
     isConnected, 
     setAudioPlayerRef, 
     handleSync,
+    stopSync,
     gameTime,
     playbackSpeed,
     isPlaying,
@@ -101,7 +102,8 @@ const AppContent: React.FC = () => {
   const handleRemove = useCallback(() => {
     setAudioFile(null);
     setAudioPlayerRef(null);
-  }, [setAudioPlayerRef]);
+    stopSync();
+  }, [setAudioPlayerRef, stopSync]);
 
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
@@ -145,8 +147,8 @@ const AppContent: React.FC = () => {
                 <GameStatusValue>{isPlaying ? 'Playing' : 'Paused'}</GameStatusValue>
               </GameStatusItem>
               <GameStatusItem>
-                <StatusLabel>Time difference:</StatusLabel>
-                <GameStatusValue>{timeDifference}s</GameStatusValue>
+                <StatusLabel>Time difference between audio and replay:</StatusLabel>
+                <GameStatusValue>{timeDifference !== null ? `${timeDifference.toFixed(0)}s` : '--:--'}</GameStatusValue>
               </GameStatusItem>
             </GameStatusContainer>
           )}
@@ -193,7 +195,9 @@ const AppContent: React.FC = () => {
                 <RemoveButton onClick={handleRemove}>Remove</RemoveButton>
               </AudioContainer>
               <ButtonContainer>
-                <SyncButton onClick={handleSync}>Sync</SyncButton>
+                <SyncButton onClick={timeDifference === null ? handleSync : stopSync}>
+                  {timeDifference === null ? 'Sync' : 'Stop Sync'}
+                </SyncButton>
               </ButtonContainer>
               <HowToContainer>
                 <HowToTitle>How it works</HowToTitle>

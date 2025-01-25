@@ -11,6 +11,7 @@ interface ConnectionContextType {
   gameTime: number | null;
   playbackSpeed: number;
   isPlaying: boolean;
+  stopSync: () => void;
 }
 
 const ConnectionContext = createContext<ConnectionContextType | undefined>(undefined);
@@ -27,6 +28,7 @@ const checkConnection = async (signal: AbortSignal): Promise<ReturnType<IElectro
 export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isConnected, setIsConnected] = useState(false);
   const [timeDifference, setTimeDifference] = useState<number | null>(null);
+  const timeDifferenceRef = useRef<number | null>(null);
   const [gameTime, setGameTime] = useState<number | null>(null);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -42,7 +44,8 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   };
 
   const checkSync = (time: number, speed: number, paused: boolean) => {
-    console.log('called check sync');
+    const timeDifference = timeDifferenceRef.current;
+    console.log('called check sync', timeDifference, audioPlayerRef.current);
     if (timeDifference !== null && audioPlayerRef.current) {
       console.log('time diff', timeDifference);
       const currTime = audioPlayerRef.current.currentTime;
@@ -66,6 +69,10 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       }
     }
   }
+
+  useEffect(() => {
+    timeDifferenceRef.current = timeDifference;
+  }, [timeDifference]);
 
   const startPolling = useCallback(() => {
     if (pollInterval.current) {
@@ -176,6 +183,14 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     }
   }, [startPolling, stopPolling, isConnected]);
 
+  const stopSync = useCallback(() => {
+    setTimeDifference(null);
+    stopPolling();
+    if (audioPlayerRef.current) {
+      audioPlayerRef.current.pause();
+    }
+  }, [stopPolling]);
+
   return (
     <ConnectionContext.Provider value={{ 
       isConnected, 
@@ -186,7 +201,8 @@ export const ConnectionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       handleSync,
       gameTime,
       playbackSpeed,
-      isPlaying
+      isPlaying,
+      stopSync
     }}>
       {children}
     </ConnectionContext.Provider>
