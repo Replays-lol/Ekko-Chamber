@@ -37,6 +37,9 @@
     ],
     "directories": {
       "buildResources": "assets"
+    },
+    "win": {
+      "icon": "public/ekko-face.webp"
     }
   },
   "browserslist": {

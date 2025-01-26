@@ -10,6 +10,7 @@ function createWindow() {
     height: 720,
     frame: false,
     resizable: false,
+    icon: path.join(__dirname, '../public/ekko-face.webp'),
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
