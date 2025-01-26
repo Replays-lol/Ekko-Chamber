@@ -227,4 +227,14 @@ export const GameStatusItem = styled.div`
 export const GameStatusValue = styled.span`
   color: #4CAF50;
   font-weight: 500;
+`;
+
+export const ToastLink = styled.a`
+  color: #ff4655;
+  text-decoration: none;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #ff7a85;
+  }
 `; 

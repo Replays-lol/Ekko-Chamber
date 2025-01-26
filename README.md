@@ -2,7 +2,7 @@
 
 Ekko Chamber is a desktop application that helps League of Legends players sync their team's voice communications with replay files for perfect playback. This tool is especially useful for teams and coaches reviewing gameplay footage with comms.
 
-<img src="/src/assets/screenshot.png" alt="Ekko Chamber Screenshot" width="600"/>
+<img src="/src/assets/screenshot.png" alt="Ekko Chamber Screenshot" width="800"/>
 
 ## Features
 

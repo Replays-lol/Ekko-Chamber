@@ -28,9 +28,13 @@ import {
   AudioContainer,
   GameStatusContainer,
   GameStatusItem,
-  GameStatusValue
+  GameStatusValue,
+  ToastLink
 } from './App.styles';
 import LogoImage from './assets/Logo.png';
+import { checkForUpdates } from './utils/versionCheck';
+import { toast } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 
 const ACCEPTED_AUDIO_TYPES = [
   'audio/mpeg',  // .mp3
@@ -42,9 +46,9 @@ const ACCEPTED_AUDIO_TYPES = [
 ];
 
 const AppContent: React.FC = () => {
-  const { 
-    isConnected, 
-    setAudioPlayerRef, 
+  const {
+    isConnected,
+    setAudioPlayerRef,
     handleSync,
     stopSync,
     gameTime,
@@ -63,7 +67,7 @@ const AppContent: React.FC = () => {
   const onDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    
+
     const file = e.dataTransfer.files[0];
     if (file && ACCEPTED_AUDIO_TYPES.includes(file.type)) {
       handleChange(file);
@@ -117,9 +121,35 @@ const AppContent: React.FC = () => {
     console.log('fully reloaded');
   }, [audioFile]);
 
+  useEffect(() => {
+    const checkVersion = async () => {
+      const updateAvailable = await checkForUpdates();
+      if (updateAvailable) {
+        toast((
+          <div>
+            <span>A new version is available!</span>{' '}
+            <ToastLink
+              href="https://github.com/yourusername/ekko-chamber"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Download now
+            </ToastLink>
+          </div>
+        ),
+          {
+            duration: 10000,
+          }
+        );
+      };
+    }
+
+    checkVersion();
+  }, []);
+
   return (
     <>
-      <GlobalStyle/>
+      <GlobalStyle />
       <AppContainer>
         <TitleBar />
         <Content>
@@ -187,10 +217,10 @@ const AppContent: React.FC = () => {
           ) : (
             <>
               <AudioContainer>
-                <AudioPlayer 
+                <AudioPlayer
                   ref={ref => setAudioPlayerRef(ref)}
-                  controls 
-                  src={audioFileUrl || ""} 
+                  controls
+                  src={audioFileUrl || ""}
                 />
                 <RemoveButton onClick={handleRemove}>Remove</RemoveButton>
               </AudioContainer>
@@ -224,6 +254,18 @@ const App: React.FC = () => {
   return (
     <ConnectionProvider>
       <AppContent />
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          style: {
+            background: '#1a1a1a',
+            color: '#ffffff',
+            border: '1px solid #333333',
+            padding: '16px',
+            borderRadius: '8px',
+          },
+        }}
+      />
     </ConnectionProvider>
   );
 };
