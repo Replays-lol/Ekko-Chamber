@@ -1,5 +1,6 @@
 {
-  "name": "electron-react-app",
+  "name": "ekko-chamber",
+  "productName": "Ekko Chamber",
   "version": "1.0.0",
   "private": true,
   "main": "build/electron/main.js",
@@ -23,24 +24,28 @@
     "wait-on": "^6.0.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "set NODE_ENV=development && react-scripts start",
+    "build": "set PUBLIC_URL=.&& react-scripts build && tsc -p electron/tsconfig.json",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "electron-tsc": "tsc -p electron/tsconfig.json",
-    "electron-dev": "concurrently \"set BROWSER=none && npm start\" \"wait-on http://localhost:3000 && npm run electron-tsc && electron .\"",
-    "electron-build": "npm run build && electron-builder -c.extraMetadata.main=build/electron/main.js"
+    "electron-dev": "concurrently \"set BROWSER=none && set NODE_ENV=development && npm start\" \"wait-on http://localhost:3000 && npm run electron-tsc && electron .\"",
+    "electron:build": "set NODE_ENV=production && npm run build && electron-builder build --win --publish never"
   },
   "build": {
     "extends": null,
     "files": [
-      "build/**/*"
+      "build/**/*",
+      "!build/static/js/*.map"
     ],
     "directories": {
       "buildResources": "assets"
     },
     "win": {
-      "icon": "public/ekko-face.webp"
+      "icon": "build/ekko-face.ico"
+    },
+    "extraMetadata": {
+      "main": "build/electron/main.js"
     }
   },
   "browserslist": {
