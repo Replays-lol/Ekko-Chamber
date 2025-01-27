@@ -129,7 +129,7 @@ const AppContent: React.FC = () => {
           <div>
             <span>A new version is available!</span>{' '}
             <ToastLink
-              href="https://github.com/yourusername/ekko-chamber"
+              href="https://github.com/Replays-lol/ekko-chamber"
               target="_blank"
               rel="noopener noreferrer"
             >
